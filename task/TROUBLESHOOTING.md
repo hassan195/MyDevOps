@@ -1,4 +1,4 @@
-## Bug 1: Missing `then` keyword in if statement
+## Bug 1: Missing `for`,`then` keyword in loop and if statement
 
 **Symptom:**
 syntax error near unexpected token `do'
@@ -20,4 +20,25 @@ for f in $(ls $log_dir/*.log); do
   fi
 done
 echo "Archived $count files"
+--
+
+## Bug 2: unsafe file iteration 
+
+**Symptom:**
+if $log_dir contains spaces, the script breaks unintended. 
+
+**diagnostic command + output**
+hassan@Hassan-T14:~/MyDevOpsBootCamp/task$ shellcheck rotate_log.sh 
+
+In rotate_log.sh line 5:
+for f in $(ls $log_dir/*.log); do
+         ^------------------^ SC2045 (error): Iterating over ls output is fragile. Use globs.
+              ^------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+**Root cause:**
+$(ls $log_dir/*.log) re-splits filenames on whitespace and can be replaced by glob; varibale log_dir should be quoted to prevent globbing and splitting.
+
+
+**Fix:**
+for f in $"$log_dir"/*.log; do
 --
