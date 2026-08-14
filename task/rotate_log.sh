@@ -6,7 +6,7 @@ for f in $"$log_dir"/*.log; do
   age=$(find "$f" -mtime +7) 
   if [ "$age" ]; then
   mv "$f" "$archive_dir/"
-  count=$count+1
+  count=$(($count+1))
   fi
 done
 echo "Archived $count files"

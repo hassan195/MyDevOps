@@ -72,3 +72,28 @@ filename,path and directory related variables are not quoted
   if [ "$age" ]; then
   mv "$f" "$archive_dir/"
 ---
+
+## Bug 4: Number of archived files is not counted as expected
+
+
+**Symptom:**
+script output is string concatenation in stead of real number.
+
+**diagnostic command + output**
++ mv /home/hassan/tmp/logs/3.log /home/hassan/tmp/archive/
++ count=+1+1+1
++ for f in "$log_dir"/*.log
+++ find /home/hassan/tmp/logs/4.log -mtime +7
++ age=/home/hassan/tmp/logs/4.log
++ '[' /home/hassan/tmp/logs/4.log ']'
++ mv /home/hassan/tmp/logs/4.log /home/hassan/tmp/archive/
++ count=+1+1+1+1
++ echo 'Archived +1+1+1+1 files'
+Archived +1+1+1+1 files
+
+**Root cause:**
+count=$count+1 is string concatenation
+
+**Fix:**
+count=$(($count + 1))
+---
