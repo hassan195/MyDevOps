@@ -20,7 +20,7 @@ for f in $(ls $log_dir/*.log); do
   fi
 done
 echo "Archived $count files"
---
+---
 
 ## Bug 2: unsafe file iteration 
 
@@ -41,4 +41,34 @@ $(ls $log_dir/*.log) re-splits filenames on whitespace and can be replaced by gl
 
 **Fix:**
 for f in $"$log_dir"/*.log; do
---
+---
+
+## Bug 3: unquoted variables 
+
+**Symptom:**
+word splitting happens when variable contains space
+
+**diagnostic command + output**
+hassan@Hassan-T14:~/MyDevOpsBootCamp/task$ shellcheck rotate_log.sh 
+
+In rotate_log.sh line 6:
+  age=$(find $f -mtime +7) 
+             ^-- SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean: 
+  age=$(find "$f" -mtime +7) 
+
+
+In rotate_log.sh line 7:
+  if [ $age ]; then
+       ^--^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+
+**Root cause:**
+filename,path and directory related variables are not quoted 
+
+**Fix:**
+ age=$(find "$f" -mtime +7) 
+  if [ "$age" ]; then
+  mv "$f" "$archive_dir/"
+---
