@@ -75,7 +75,6 @@ filename,path and directory related variables are not quoted
 
 ## Bug 4: Number of archived files is not counted as expected
 
-
 **Symptom:**
 script output is string concatenation in stead of real number.
 
@@ -96,4 +95,45 @@ count=$count+1 is string concatenation
 
 **Fix:**
 count=$(($count + 1))
+---
+
+## Bug 5:  Missing arguments validation 
+
+**Symptom:**
+script coutinues running even without providing arguments
+
+**diagnostic command + output**
+hassan@Hassan-T14:~/MyDevOpsBootCamp/task$ bash -x rotate_log.sh 
++ archive_dir=
++ log_dir=
++ for f in "$log_dir"/*.log
+++ find '/*.log' -mtime +7
+find: ‘/*.log’: No such file or directory
++ age=
++ '[' '' ']'
++ echo 'Archived  files'
+Archived  files
+
+**Root cause:**
+No argument validation checked before iterating through directory
+
+**Fix:**
+
+if [ "$#" -ne 2 ]; then
+  echo "Error: Two arguments required." >&2
+  usage
+fi
+
+archive_dir="$1"
+log_dir="$2"
+
+if [ ! -d "$archive_dir" ]; then
+  echo "Error: Archive directory does not exist." >&2
+  exit 1
+fi
+
+if [ ! -d "$log_dir" ]; then
+  echo "Error: Log directory does not exist." >&2
+  exit 1
+fi
 ---
