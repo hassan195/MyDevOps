@@ -137,3 +137,24 @@ if [ ! -d "$log_dir" ]; then
   exit 1
 fi
 ---
+
+## Bug 6: Missing usage function
+
+**Symptom:**
+no usage information printed
+
+**diagnostic command + output**
+hassan@Hassan-T14:~/MyDevOpsBootCamp/task$ bash -x rotate_log.sh 
++ '[' 0 -ne 2 ']'
++ echo 'Error: Two arguments required.'
+Error: Two arguments required.
++ exit 1
+
+**Root cause:**
+no usage function defined in the script
+
+**Fix:**
+usage() {
+  echo "Usage: $0 <archive_dir> <log_dir>" >&2
+  exit 1
+}
