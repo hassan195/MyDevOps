@@ -158,3 +158,34 @@ usage() {
   echo "Usage: $0 <archive_dir> <log_dir>" >&2
   exit 1
 }
+
+## Bug 7: Missing  set -euo pipefail
+
+**Symptom:**
+script failed if no *.log files in log_dir
+
+**diagnostic command + output**
+hassan@Hassan-T14:~/MyDevOpsBootCamp/task$ bash -x rotate_log.sh /home/hassan/tmp/archive /home/hassan/tmp/logs
++ set -euo pipefail
++ '[' 2 -ne 2 ']'
++ archive_dir=/home/hassan/tmp/archive
++ log_dir=/home/hassan/tmp/logs
++ '[' '!' -d /home/hassan/tmp/archive ']'
++ '[' '!' -d /home/hassan/tmp/logs ']'
++ count=0
++ for f in "$log_dir"/*.log
+++ find '/home/hassan/tmp/logs/*.log' -type f -mtime +7
++ age=
+
+**Root cause:**
+Forgot to implement set -euo pipefail in script
+
+**Fix:**
+set -euo pipefail
+
+count=0
+for f in $"$log_dir"/*.log; do
+  age=$(find "$f" -type f -mtime +7 2>/dev/null ) || true
+  if [ -n "$age" ]; then
+    mv "$f" "$archive_dir/"
+    count=$((count+1))
