@@ -1,0 +1,7 @@
+services:
+  product-catalogue:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "8080:80"
