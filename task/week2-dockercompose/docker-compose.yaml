@@ -6,10 +6,11 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - api
+      api:
+        condition: service_healthy
+
   api:
     build: ./api
     image: api:latest
     ports:
       - "3000:3000"
-  
