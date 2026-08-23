@@ -3,5 +3,14 @@ services:
     build:
       context: .
       dockerfile: dockerfile
+    image: product-catalogue:1.0.0
     ports:
       - "8080:80"
+    depends_on:
+      - api
+  api:
+    build: ./api
+    image: api:latest
+    ports:
+      - "3000:3000"
+  
