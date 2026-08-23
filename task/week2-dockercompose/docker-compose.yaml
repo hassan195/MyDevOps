@@ -2,8 +2,7 @@ services:
   product-catalogue:
     build:
       context: .
-      dockerfile: dockerfile
-    image: product-catalogue:1.0.0
+    image: hassan195ma/product-catalogue:1.0.0
     ports:
       - "8080:80"
     depends_on:
