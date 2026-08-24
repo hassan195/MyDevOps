@@ -1,0 +1,16 @@
+services:
+  product-catalogue:
+    build:
+      context: .
+    image: hassan195ma/product-catalogue:1.0.0
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    build: ./api
+    image: api:latest
+    ports:
+      - "3000:3000"
