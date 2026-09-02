@@ -1,0 +1,41 @@
+services:
+  catalogue-web:
+    build:
+      context: .
+    ports:
+      - "8080:80"
+    depends_on:
+      inventory-api:
+        condition: service_healthy
+
+  inventory-api:
+    build: ./inventory-api
+    env_file:
+      - .env
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  
+  inventory-db:
+    image: postgres:15-alpine
+    container_name: inventory-db
+    env_file:
+      - .env
+    volumes:
+      - inventory-db-data:/var/lib/postgresql/data
+      # Mount the seed.sql file to the container's initialization directory. Use copy when building the image 
+      - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  inventory-db-data:
