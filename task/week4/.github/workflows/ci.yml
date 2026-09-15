@@ -1,0 +1,27 @@
+name: CI/CD Pipeline
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    dockerfile-lint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+            
+            - name: Run Hadolint to lint Dockerfile
+              uses: hadolint/hadolint-action@v3.3.0
+              with:
+                  dockerfile: ./Dockerfile
+
+    security-scan:
+        needs: dockerfile-lint
+        uses: hassan195/gh-actions/.github/workflows/security_scan.yml@fix
+        with:
+            severity: CRITICAL,HIGH
