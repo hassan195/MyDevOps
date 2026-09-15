@@ -1,12 +1,14 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline for Week 4
 
 on:
     push:
         branches:
             - main
+            - week4
     pull_request:
         branches:
             - main
+            - week4
 
 jobs:
     dockerfile-lint:
@@ -18,10 +20,11 @@ jobs:
             - name: Run Hadolint to lint Dockerfile
               uses: hadolint/hadolint-action@v3.3.0
               with:
-                  dockerfile: ./Dockerfile
+                  dockerfile: ./task/week4/Dockerfile
 
     security-scan:
         needs: dockerfile-lint
         uses: hassan195/gh-actions/.github/workflows/security_scan.yml@fix
         with:
             severity: CRITICAL,HIGH
+            scan-ref: ./task/week4
