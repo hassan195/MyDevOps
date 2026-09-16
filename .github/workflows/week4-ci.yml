@@ -76,16 +76,8 @@ jobs:
               run: docker load -i inventory-api.tar
 
             - name: Generate SBOM
-              run: |
-                    docker run --rm \
-                        -v /var/run/docker.sock:/var/run/docker.sock \
-                        -v "$PWD":/output \
-                        aquasecurity/trivy:latest image \
-                        --format spdx-json \
-                        --output /output/sbom.json \
-                        inventory-api
-            - name: Upload SBOM artifact
-              uses: actions/upload-artifact@v4
-              with:
-                  name: sbom
-                  path: sbom.json
+              uses: aquasecurity/trivy-action@v0.36.0
+              with: 
+                image-ref: inventory-api
+                format: spdx-json
+                output: sbom.json
