@@ -47,15 +47,8 @@ jobs:
             severity: CRITICAL,HIGH
             scan-ref: ./task/week4
 
-    security-scan-critical-only:
-        needs: dockerfile-lint
-        uses: hassan195/gh-actions/.github/workflows/security_scan.yml@fix
-        with:
-            severity: CRITICAL
-            scan-ref: ./task/week4
-
     build-image:
-        needs: security-scan-critical-only
+        needs: security-scan-baseline
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
