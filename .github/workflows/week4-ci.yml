@@ -46,3 +46,46 @@ jobs:
         with:
             severity: CRITICAL,HIGH
             scan-ref: ./task/week4
+
+    build-image:
+        needs: security-scan
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Build Docker image
+              run: docker build -t inventory-api ./task/week4
+
+            - name: Save Docker image as artifact
+              run: docker save inventory-api -o inventory-api.tar
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: inventory-api-image
+                  path: inventory-api.tar
+    
+    sbom:
+        needs: build-image
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  name: inventory-api-image
+            - name: Load Docker image
+              run: docker load -i inventory-api.tar
+
+            - name: Generate SBOM
+              run: |
+                    docker run --rm \
+                        -v /var/run/docker.sock:/var/run/docker.sock \
+                        -v "$PWD":/output \
+                        aquasecurity/trivy:latest image \
+                        --format spdx-json \
+                        --output /output/sbom.json \
+                        inventory-api
+            - name: Upload SBOM artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: sbom
+                  path: sbom.json
