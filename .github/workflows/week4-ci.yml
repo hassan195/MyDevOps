@@ -21,6 +21,24 @@ jobs:
               uses: hadolint/hadolint-action@v3.3.0
               with:
                   dockerfile: ./task/week4/Dockerfile
+    
+    python-sast:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: '3.12'
+            
+            - name: Install Bandit
+              run: pip install bandit
+            
+            - name: Run Bandit for static analysis
+              run: bandit -r ./task/week4 -ll
+            
 
     security-scan:
         needs: dockerfile-lint
