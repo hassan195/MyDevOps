@@ -12,9 +12,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY inventory-api.py .
 
+
+RUN useradd --create-home --uid 1001 appuser
+USER 1001
+
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=5 \
-   CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:3000/health', timeout=3)" || exit 1
+   CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:3000/health', timeout=3) || exit 1 "]
 
 CMD ["python", "inventory-api.py"]

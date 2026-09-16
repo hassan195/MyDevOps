@@ -21,10 +21,69 @@ jobs:
               uses: hadolint/hadolint-action@v3.3.0
               with:
                   dockerfile: ./task/week4/Dockerfile
+    
+    python-sast:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-    security-scan:
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: '3.12'
+            
+            - name: Install Bandit
+              run: pip install bandit
+            
+            - name: Run Bandit for static analysis
+              run: bandit -r ./task/week4 -ll
+            
+
+    security-scan-baseline:
         needs: dockerfile-lint
         uses: hassan195/gh-actions/.github/workflows/security_scan.yml@fix
         with:
             severity: CRITICAL,HIGH
             scan-ref: ./task/week4
+
+    build-image:
+        needs: security-scan-baseline
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Build Docker image
+              run: docker build -t inventory-api ./task/week4
+
+            - name: Save Docker image as artifact
+              run: docker save inventory-api -o inventory-api.tar
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: inventory-api-image
+                  path: inventory-api.tar
+    
+    sbom:
+        needs: build-image
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  name: inventory-api-image
+            - name: Load Docker image
+              run: docker load -i inventory-api.tar
+
+            - name: Generate SBOM
+              uses: aquasecurity/trivy-action@v0.36.0
+              with: 
+                image-ref: inventory-api
+                format: spdx-json
+                output: sbom.json
+
+            - name: Upload SBOM
+              uses: actions/upload-artifact@v4
+              with:
+                name: sbom
+                path: sbom.json
