@@ -148,7 +148,8 @@ class Handler(BaseHTTPRequestHandler):
 # 4. 启动 HTTP 服务器
 # ==========================================
 if __name__ == "__main__":
-    server_address = ("0.0.0.0",3000 )
+    # nosec B104 : [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+    server_address = ("0.0.0.0",3000 ) # nosec B104 
     httpd = HTTPServer(server_address, Handler)
     logging.info(f"Server running on http://localhost:{server_address[1]}")
     
