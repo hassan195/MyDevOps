@@ -20,7 +20,7 @@ jobs:
             - name: Run Hadolint to lint Dockerfile
               uses: hadolint/hadolint-action@v3.3.0
               with:
-                  dockerfile: ./task/week4/Dockerfile
+                  dockerfile: ./task/week4/inventory-api/Dockerfile
     
     python-sast:
         runs-on: ubuntu-latest
@@ -41,14 +41,13 @@ jobs:
             
 
     security-scan-baseline:
-        needs: dockerfile-lint
         uses: hassan195/gh-actions/.github/workflows/security_scan.yml@fix
         with:
             severity: CRITICAL,HIGH
             scan-ref: ./task/week4
 
     build-image:
-        needs: security-scan-baseline
+        needs: [security-scan-baseline,dockerfile-lint,python-sast]
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code

@@ -19,6 +19,6 @@ USER 1001
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=5 \
-   CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:3000/health', timeout=3) || exit 1 "]
+   CMD ["sh", "-c", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:3000/health', timeout=3)\" || exit 1 "]
 
 CMD ["python", "inventory-api.py"]
