@@ -23,6 +23,9 @@ aws cloudwatch set-alarm-state --alarm-name "harbourbooks-highcpu" --state-value
 ```
 ### Why: Using automated way to identify the instance is under sustained load, this gives early warnning via email so intervention can take before an outage.
 
+<img width="1305" height="513" alt="图片" src="https://github.com/user-attachments/assets/96d891a0-f72f-4e5a-bcda-9cc5133310e7" />
+
+
 ## 1.3 Created a CloudWatch Alarm on EC2 instance's StatusCheckFailed metric, triggered manually to verify it is functionality
 ### What Changed:
 ```aws
@@ -33,6 +36,7 @@ aws cloudwatch set-alarm-state --alarm-name "harbourbooks-statuscheckfailed" --s
 aws cloudwatch set-alarm-state --alarm-name "harbourbooks-statuscheckfailed" --state-value OK  --state-reason "Testing CloudWach Alarm notification: statuscheckfailed"
 ```
 ### Why: Using automated way to identify the instance is not working normally, this gives early warnning via email so intervention can take before an outage.
+<img width="1420" height="624" alt="图片" src="https://github.com/user-attachments/assets/8cb69540-bb43-48c6-8d57-e49c03ac7e1a" />
 
 ## 1.4 Created a CloudWatch Alarm on Flask's ERROR log, triggered manually to verify it is functionality
 ### What Changed:
@@ -44,6 +48,7 @@ aws cloudwatch put-metric-alarm  --alarm-name harbourbooks-flaskerror --metric-n
 aws cloudwatch set-alarm-state --alarm-name "harbourbooks-flaskerror" --state-value ALARM  --state-reason "Testing CloudWach Alarm notification: Flask Error"
 ```
 ### Why: Using automated way to identify the flask service is running with error, this gives early warnning via email so intervention can take before an outage.
+<img width="1362" height="609" alt="图片" src="https://github.com/user-attachments/assets/a7de3bc2-7f83-469e-b409-c9fc3b4ea26f" />
 
 # 2. Set up least-privilege security group
 ### What Changed:
