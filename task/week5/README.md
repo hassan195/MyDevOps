@@ -1,7 +1,7 @@
 # 1. Monitoring with CloudWatch and SNS
 ## 1.1 Created an SNS topic subscribed to my email.
 ### What Changed:
-```shell
+```aws
 aws sns create-topic --name harbourbooks-alerts --tags Key=Project,Value=harbour-books Key=Owner,Value=Hassan Key=Environment,Value=dev
 
 aws sns subscribe --topic-arn "arn:aws:sns:us-east-1:972766456394:harbourbooks-alerts" --protocol email --notification-endpoint hassan195@gmail.com
@@ -10,7 +10,7 @@ aws sns subscribe --topic-arn "arn:aws:sns:us-east-1:972766456394:harbourbooks-a
 
 ## 1.2 Created a CloudWatch Alarm on EC2 instance's CPUUilization metric, triggered manually to verify its functionality
 ### What Changed:
-```shell
+```aws
 INSTANCEID=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].InstanceId" --output text)
 
 ALARM_TOPICARN=$(aws sns list-topics --query "Topics[?contains(TopicArn,'harbourbooks')].TopicArn" --output text)
@@ -25,7 +25,7 @@ aws cloudwatch set-alarm-state --alarm-name "harbourbooks-highcpu" --state-value
 
 ## 1.3 Created a CloudWatch Alarm on EC2 instance's StatusCheckFailed metric, triggered manually to verify it is functionality
 ### What Changed:
-```shell
+```aws
 aws cloudwatch put-metric-alarm --alarm-name harbourbooks-statuscheckfailed --metric-name StatusCheckFailed --namespace AWS/EC2 --statistic Maximum --period 60 --evaluation-periods 2 --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold --dimensions Name=InstanceId,Value=$INSTANCEID --alarm-actions $ALARM_TOPICARN --tags Key=Project,Value=harbour-books Key=Owner,Value=Hassan Key=Environment,Value=dev
 
 aws cloudwatch set-alarm-state --alarm-name "harbourbooks-statuscheckfailed" --state-value ALARM  --state-reason "Testing CloudWach Alarm notification: statuscheckfailed"
@@ -36,7 +36,7 @@ aws cloudwatch set-alarm-state --alarm-name "harbourbooks-statuscheckfailed" --s
 
 ## 1.4 Created a CloudWatch Alarm on Flask's ERROR log, triggered manually to verify it is functionality
 ### What Changed:
-```shell
+```aws
 aws logs create-log-group --log-group-name /harbourbooks/flask-app
 
 aws cloudwatch put-metric-alarm  --alarm-name harbourbooks-flaskerror --metric-name FlaskErrorCount --namespace HarbourBooks  --statistic Sum --period 60 --evaluation-periods 1 --threshold 0 --comparison-operator GreaterThanThreshold --treat-missing-data notBreaching --alarm-actions $ALARM_TOPICARN --tags Key=Project,Value=harbour-books Key=Owner,Value=Hassan Key=Environment,Value=dev
@@ -47,7 +47,7 @@ aws cloudwatch set-alarm-state --alarm-name "harbourbooks-flaskerror" --state-va
 
 # 2. Set up least-privilege security group
 ### What Changed:
-```shell
+```aws
 aws ec2 revoke-security-group-egress --group-id sg-0996b4d0795af8a57 --security-group-rule-ids sgr-0021831bcd0f40bd9
 
 aws ec2 authorize-security-group-egress --group-id sg-0996b4d0795af8a57 --protocol tcp --port 443 --cidr 0.0.0.0/0
@@ -59,7 +59,7 @@ aws ec2 authorize-security-group-egress --group-id sg-0996b4d0795af8a57 --protoc
 
 # 3. Set up Secrets Manager and IAM role to enforce credential security
 ### What Changed:
-```shell
+```aws
 aws secretsmanager create-secret --name harbour-books/db-password --secret-string '{"username":"admin","password":"db_admin_password"}' --tags Key=Project,Value=harbour-books Key=Owner,Value=Hassan Key=Environment,Value=dev
 ```
 ```json
@@ -75,7 +75,7 @@ secrets-policy.json
   ]
 }
 ```
-```shell
+```aws
 aws iam create-policy --policy-name harbourbooks-read-secret --policy-document file:file://secrets-policy.json
 
 aws iam create-role  --role-name habourbooks-ec2-role --assume-role-policy-document '{ "Version":"2012-10-17", "Statement": [{ "Effect" : "Allow", "Principal" : {"Service":"ec2.amazonaws.com"}, "Action" : "sts:AssumeRole"}] }'
