@@ -26,7 +26,7 @@ aws cloudwatch set-alarm-state --alarm-name "harbourbooks-highcpu" --state-value
 <img width="1305" height="513" alt="图片" src="https://github.com/user-attachments/assets/96d891a0-f72f-4e5a-bcda-9cc5133310e7" />
 
 
-## 1.3 Created a CloudWatch Alarm on EC2 instance's StatusCheckFailed metric, triggered manually to verify it is functionality
+## 1.3 Created a CloudWatch Alarm on EC2 instance's StatusCheckFailed metric, triggered manually to verify its functionality
 ### What Changed:
 ```aws
 aws cloudwatch put-metric-alarm --alarm-name harbourbooks-statuscheckfailed --metric-name StatusCheckFailed --namespace AWS/EC2 --statistic Maximum --period 60 --evaluation-periods 2 --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold --dimensions Name=InstanceId,Value=$INSTANCEID --alarm-actions $ALARM_TOPICARN --tags Key=Project,Value=harbour-books Key=Owner,Value=Hassan Key=Environment,Value=dev
@@ -38,7 +38,7 @@ aws cloudwatch set-alarm-state --alarm-name "harbourbooks-statuscheckfailed" --s
 ### Why: Using automated way to identify the instance is not working normally, this gives early warnning via email so intervention can take before an outage.
 <img width="1420" height="624" alt="图片" src="https://github.com/user-attachments/assets/8cb69540-bb43-48c6-8d57-e49c03ac7e1a" />
 
-## 1.4 Created a CloudWatch Alarm on Flask's ERROR log, triggered manually to verify it is functionality
+## 1.4 Created a CloudWatch Alarm on Flask's ERROR log, triggered manually to verify its functionality
 ### What Changed:
 ```aws
 aws logs create-log-group --log-group-name /harbourbooks/flask-app
