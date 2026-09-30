@@ -22,6 +22,9 @@ aws cloudwatch set-alarm-state --alarm-name "harbourbooks-highcpu" --state-value
 
 aws cloudwatch set-alarm-state --alarm-name "harbourbooks-highcpu" --state-value OK --state-reason "Testing CloudWach Alarm notification"
 ```
+<img width="1285" height="606" alt="图片" src="https://github.com/user-attachments/assets/07d0bb52-c9dc-4659-9706-837cf4ad08dc" />
+
+
 ### Why: Using automated way to identify the instance is under sustained load, this gives early warnning via email so intervention can take before an outage.
 
 ## 1.3 Created a CloudWatch Alarm on EC2 instance's StatusCheckFailed metric, triggered manually to verify its functionality
@@ -33,6 +36,9 @@ aws cloudwatch set-alarm-state --alarm-name "harbourbooks-statuscheckfailed" --s
 
 aws cloudwatch set-alarm-state --alarm-name "harbourbooks-statuscheckfailed" --state-value OK  --state-reason "Testing CloudWach Alarm notification: statuscheckfailed"
 ```
+<img width="1266" height="552" alt="图片" src="https://github.com/user-attachments/assets/35d100cb-577d-4851-9113-24bd86076323" />
+
+
 ### Why: Using automated way to identify the instance is not working normally, this gives early warnning via email so intervention can take before an outage.
 
 ## 1.4 Created a CloudWatch Alarm on Flask's ERROR log, triggered manually to verify its functionality
@@ -48,6 +54,9 @@ aws cloudwatch put-metric-alarm  --alarm-name harbourbooks-flaskerror --metric-n
 
 aws cloudwatch set-alarm-state --alarm-name "harbourbooks-flaskerror" --state-value ALARM  --state-reason "Testing CloudWach Alarm notification: Flask Error"
 ```
+<img width="1336" height="613" alt="图片" src="https://github.com/user-attachments/assets/94738491-8204-4b0d-8a71-7af9a7e08c66" />
+
+
 ### Why: Using automated way to identify the flask service is running with error, this gives early warnning via email so intervention can take before an outage.
 
 # 2. Set up least-privilege security group
@@ -59,6 +68,8 @@ aws ec2 authorize-security-group-egress --group-id sg-0996b4d0795af8a57 --protoc
 
 aws ec2 authorize-security-group-egress --group-id sg-0996b4d0795af8a57 --protocol tcp --port 3306 --source-group sg-xxxxxxxxxxxxxxxx
 ```
+<img width="1417" height="573" alt="图片" src="https://github.com/user-attachments/assets/01a26273-1a2b-4a7e-b9d2-4b6d1dc02951" />
+
 ### Why: Scoping egress to only the two flows the application actually needs reduces the blast radius.
 
 
@@ -93,7 +104,7 @@ aws iam create-instance-profile --instance-profile-name harbourbooks-ec2-profile
 
 aws iam add-role-to-instance-profile --instance-profile-name harbourbooks-ec2-profile --role-name harbourbooks-ec2-role
 
-aws ec2 associate-iam-instance-profile --iam-instance-profile Name=harbourbooks-ec2-profile --instance-id i-09d27cb99efb52494
+aws ec2 associate-iam-instance-profile --iam-instance-profile Name=harbourbooks-ec2-profile --instance-id i-xxxxxxxxxxxxxx
 ```
 ### Why:Moving credential to Secrets Manager centralizes and audits access, and scoping the IAM role to GetSecretValue on one specific secret ARN follows least privilege practice.
 
