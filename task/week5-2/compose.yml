@@ -1,0 +1,12 @@
+services:
+  app:
+    image: "${DOCKER_IMAGE_NAME:-week5-2-app}:${TAG:-local}"
+    ports:
+      - "127.0.1.1:8080:8080"
+    healthcheck:
+      test:["CMD","python","-c","import urllib.request; urllib.request.urlopen('http://localhost:8080',timeout=3)"]
+    interval: 10s
+    timeout: 3s
+    retries: 10
+    start_period: 5s
+
