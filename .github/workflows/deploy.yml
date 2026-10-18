@@ -16,7 +16,7 @@ permissions:
     id-token: write
 
 env:
-    AWS_REGION: ap-southeast-2
+    AWS_REGION: us-east-1
     ECR_REPOSITORY: week5-2-deploy
 
 jobs:
