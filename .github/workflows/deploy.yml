@@ -88,7 +88,6 @@ jobs:
                         \"docker rm -f ${CONTAINER_NAME} || true\",
                         \"docker run -d --name ${CONTAINER_NAME} --restart unless-stopped -p 8080:8080 ${IMAGE}\"
                         ]" \
-
                         --query "Command.CommandId" --output text)
 
                         if ! aws ssm wait command-executed --command-id "$CMD_ID" --instance-id "$INSTANCE_ID"; then
