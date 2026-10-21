@@ -77,7 +77,7 @@ jobs:
                   REGISTRY_URI=${ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
                   IMAGE=${REGISTRY_URI}/${{ env.ECR_REPOSITORY }}:${TAG}
 
-                  CMD_ID = $(aws ssm send-command \
+                  CMD_ID=$(aws ssm send-command \
                       --targets "Key=instanceIds,Values=${INSTANCE_ID}" \
                       --document-name "AWS-RunShellScript" \
                       --comment "Deploying week5-2 application" \
