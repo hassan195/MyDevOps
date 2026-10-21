@@ -48,7 +48,7 @@ jobs:
                   echo "TAG=${GITHUB_SHA}" >> .env
 
             - name: Build
-              run: make build
+              run: make build TAG=${{ inputs.environment }}
 
             - name: Push
               run: make push 
@@ -80,6 +80,4 @@ jobs:
                             aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" \
                             --query '{Status:Status,Out:StandardOutputContent,Err:StandardErrorContent}'
                             exit 1
-                        fi
-
-                
+                        fi      
