@@ -19,6 +19,7 @@ env:
     AWS_REGION: us-east-1
     ECR_REPOSITORY: week5-2-deploy
     TAG: ${{ inputs.environment }}
+    GIT_SHA: ${{ github.sha }} 
 
 jobs:
     build-push:
@@ -61,8 +62,7 @@ jobs:
                   ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
               run: |
                   echo "DOCKER_IMAGE_NAME=${ECR_REGISTRY}/${{env.ECR_REPOSITORY}}" >> .env
-                  echo "TAG=${GITHUB_SHA}" >> .env
-
+        
             - name: Build
               run: make build
 
@@ -81,7 +81,7 @@ jobs:
                   CMD_ID=$(aws ssm send-command \
                       --targets "Key=instanceIds,Values=${INSTANCE_ID}" \
                       --document-name "AWS-RunShellScript" \
-                      --comment "Deploying week5-2 application" \
+                      --comment "Deploying  ${IMAGE} (${GIT_SHA}) application" \
                       --region ${{ env.AWS_REGION }} \
                       --parameters commands="[
                         \"aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${REGISTRY_URI}\",
