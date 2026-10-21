@@ -52,3 +52,34 @@ jobs:
 
             - name: Push
               run: make push 
+
+            - name: Deploy to EC2 via SSM
+              env:
+                INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
+                CONTAINER_NAME: week5-2-deploy
+              run: |
+                  ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+                  REGISTRY_URI=${ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+                  IMAGE=${REGISTRY_URI}/${{ env.ECR_REPOSITORY }}:${TAG}
+
+                  CMD_ID = $(aws ssm send-command \
+                      --targets "Key=instanceIds,Values=${INSTANCE_ID}" \
+                      --document-name "AWS-RunShellScript" \
+                      --comment "Deploying week5-2 application" \
+                      --region ${{ env.AWS_REGION }} \
+                      --parameters commands="[
+                        \"aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${REGISTRY}\",
+                        \"docker pull ${IMAGE}\",
+                        \"docker rm -f ${CONTAINER_NAME} || true\",
+                        \"docker run -d --name ${CONTAINER_NAME} --restart unless-stopped -p 8080:8080 ${IMAGE}\"
+                        ]" \
+
+                        --query "Command.CommandId" --output text)
+
+                        if ! aws ssm wait command-executed --command-id "$CMD_ID" --instance-id "$INSTANCE_ID"; then
+                            aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id "$INSTANCE_ID" \
+                            --query '{Status:Status,Out:StandardOutputContent,Err:StandardErrorContent}'
+                            exit 1
+                        fi
+
+                
