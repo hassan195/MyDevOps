@@ -11,5 +11,7 @@ permissions:
 jobs:
     deploy:
       uses: ./.github/workflows/deploy.yml
+      with:
+        environment: dev
       secrets:
         AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
