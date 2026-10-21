@@ -63,7 +63,7 @@ jobs:
                   echo "TAG=${GITHUB_SHA}" >> .env
 
             - name: Build
-              run: make build TAG=${{ inputs.environment }}
+              run: make build
 
             - name: Push
               run: make push 
