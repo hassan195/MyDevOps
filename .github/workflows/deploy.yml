@@ -18,6 +18,7 @@ permissions:
 env:
     AWS_REGION: us-east-1
     ECR_REPOSITORY: week5-2-deploy
+    TAG: ${{ inputs.environment }}
 
 jobs:
     build-push:
