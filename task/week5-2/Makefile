@@ -17,7 +17,7 @@ help:
 
 lint:
 	@echo "Linting the Dockerfile..."
-	docker run --rm -i hadolint/hadolint < Dockerfile || true
+	-docker run --rm -i hadolint/hadolint < Dockerfile 
 build: lint	
 	@echo "Building the Docker image..."
 	docker build -t $(DOCKER_IMAGE_NAME):$(TAG) .
