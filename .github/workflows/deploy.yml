@@ -81,7 +81,7 @@ jobs:
                   CMD_ID=$(aws ssm send-command \
                       --targets "Key=instanceIds,Values=${INSTANCE_ID}" \
                       --document-name "AWS-RunShellScript" \
-                      --comment "Deploying  ${IMAGE} (${GIT_SHA}) application" \
+                      --comment "Deploying  ${IMAGE} (${GIT_SHA::7}) application" \
                       --region ${{ env.AWS_REGION }} \
                       --parameters commands="[
                         \"aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${REGISTRY_URI}\",
