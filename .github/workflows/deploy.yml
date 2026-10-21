@@ -83,7 +83,7 @@ jobs:
                       --comment "Deploying week5-2 application" \
                       --region ${{ env.AWS_REGION }} \
                       --parameters commands="[
-                        \"aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${REGISTRY}\",
+                        \"aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${REGISTRY_URI}\",
                         \"docker pull ${IMAGE}\",
                         \"docker rm -f ${CONTAINER_NAME} || true\",
                         \"docker run -d --name ${CONTAINER_NAME} --restart unless-stopped -p 8080:8080 ${IMAGE}\"
