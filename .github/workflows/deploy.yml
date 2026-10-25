@@ -33,19 +33,6 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Get OIDC Token (Debug)
-              run: |
-                echo "Requesting OIDC token from GitHub..."
-                # GitHub Actions 环境变量会自动提供 ACTIONS_ID_TOKEN_REQUEST_URL 和 ACTIONS_ID_TOKEN_REQUEST_TOKEN
-                TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r '.value')
-                
-                echo "Token received (masked/truncated for safety):"
-                echo "${TOKEN:0:20}..." # 只打印前20位确认是否有值
-                
-                # 如果你想看 Token 里面的具体内容，可以用 base64 解码并打印（不包含敏感密钥，只包含你的 repo、sub 等声明）
-                echo "Token Payload:"
-                echo "$TOKEN" | awk -F'.' '{print $2}' | base64 -d 2>/dev/null || echo "Decode check"
-              shell: bash
 
             - name: Authenticate to AWS via OIDC
               uses: aws-actions/configure-aws-credentials@v4
